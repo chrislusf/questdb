@@ -84,16 +84,16 @@ inline void merge_copy_var_column(
     }
 }
 
-inline void platform_memcpy(void *dst, const void *src, const size_t len) {
+void platform_memcpy(void *dst, const void *src, const size_t len) {
     __MEMCPY(dst, src, len);
 }
 
-inline void platform_memset(void *dst, const int val, const size_t len) {
+void platform_memset(void *dst, const int val, const size_t len) {
     __MEMSET(dst, val, len);
 }
 
 // 0
-inline void merge_copy_var_column_int32(
+void merge_copy_var_column_int32(
         index_t *merge_index,
         int64_t merge_index_size,
         int64_t *src_data_fix,
@@ -109,7 +109,7 @@ inline void merge_copy_var_column_int32(
 }
 
 // 3
-inline void merge_copy_var_column_int64(
+void merge_copy_var_column_int64(
         index_t *merge_index,
         int64_t merge_index_size,
         int64_t *src_data_fix,
@@ -125,34 +125,34 @@ inline void merge_copy_var_column_int64(
 }
 
 // 5
-inline void re_shuffle_int32(const int32_t *src, int32_t *dest, const index_t *index, const int64_t count) {
+void re_shuffle_int32(const int32_t *src, int32_t *dest, const index_t *index, const int64_t count) {
     re_shuffle_vanilla(src, dest, index, count);
 }
 
 // 6
-inline void re_shuffle_int64(const int64_t *src, int64_t *dest, const index_t *index, const int64_t count) {
+void re_shuffle_int64(const int64_t *src, int64_t *dest, const index_t *index, const int64_t count) {
     re_shuffle_vanilla(src, dest, index, count);
 }
 
-inline void re_shuffle_256bit(const long_256bit *src, long_256bit *dest, const index_t *index, const int64_t count) {
+void re_shuffle_256bit(const long_256bit *src, long_256bit *dest, const index_t *index, const int64_t count) {
     re_shuffle_vanilla(src, dest, index, count);
 }
 
 // 12
-inline void merge_shuffle_int64(const int64_t *src1, const int64_t *src2, int64_t *dest, const index_t *index,
+void merge_shuffle_int64(const int64_t *src1, const int64_t *src2, int64_t *dest, const index_t *index,
                                 const int64_t count) {
     merge_shuffle_vanilla<int64_t>(src1, src2, dest, index, count);
 }
 
 //17
-inline void flatten_index(index_t *index, int64_t count) {
+void flatten_index(index_t *index, int64_t count) {
     for (int64_t i = 0; i < count; i++) {
         index[i].i = i;
     }
 }
 
 // 18
-inline void make_timestamp_index(const int64_t *data, int64_t low, int64_t high, index_t *dest) {
+void make_timestamp_index(const int64_t *data, int64_t low, int64_t high, index_t *dest) {
     for (int64_t l = low; l <= high; l++) {
         dest[l - low].ts = data[l];
         dest[l - low].i = l | (1ull << 63);
@@ -160,37 +160,37 @@ inline void make_timestamp_index(const int64_t *data, int64_t low, int64_t high,
 }
 
 // 19
-inline void set_memory_vanilla_int64(int64_t *data, const int64_t value, const int64_t count) {
+void set_memory_vanilla_int64(int64_t *data, const int64_t value, const int64_t count) {
     set_memory_vanilla<int64_t>(data, value, count);
 }
 
 // 20
-inline void set_memory_vanilla_int32(int32_t *data, const int32_t value, const int64_t count) {
+void set_memory_vanilla_int32(int32_t *data, const int32_t value, const int64_t count) {
     set_memory_vanilla<int32_t>(data, value, count);
 }
 
 // 21
-inline void set_memory_vanilla_double(double *data, const double value, const int64_t count) {
+void set_memory_vanilla_double(double *data, const double value, const int64_t count) {
     set_memory_vanilla<double>(data, value, count);
 }
 
 // 22
-inline void set_memory_vanilla_float(float *data, const float value, const int64_t count) {
+void set_memory_vanilla_float(float *data, const float value, const int64_t count) {
     set_memory_vanilla<float>(data, value, count);
 }
 
 // 23
-inline void set_memory_vanilla_short(int16_t *data, const int16_t value, const int64_t count) {
+void set_memory_vanilla_short(int16_t *data, const int16_t value, const int64_t count) {
     set_memory_vanilla<int16_t>(data, value, count);
 }
 
 // 24
-inline void set_var_refs_64_bit(int64_t *data, int64_t offset, int64_t count) {
+void set_var_refs_64_bit(int64_t *data, int64_t offset, int64_t count) {
     set_var_refs<sizeof(int64_t)>(data, offset, count);
 }
 
 // 25
-inline void set_var_refs_32_bit(int64_t *data, int64_t offset, int64_t count) {
+void set_var_refs_32_bit(int64_t *data, int64_t offset, int64_t count) {
     set_var_refs<sizeof(int32_t)>(data, offset, count);
 }
 
@@ -202,7 +202,7 @@ void copy_index(const index_t *index, const int64_t count, int64_t *dest) {
 }
 
 // 27
-inline void shift_copy(int64_t shift, int64_t *src, int64_t src_lo, int64_t src_hi, int64_t *dest) {
+void shift_copy(int64_t shift, int64_t *src, int64_t src_lo, int64_t src_hi, int64_t *dest) {
     const int64_t count = src_hi - src_lo + 1;
     for (int64_t i = 0; i < count; i++) {
         dest[i] = src[i + src_lo] - shift;
@@ -210,7 +210,7 @@ inline void shift_copy(int64_t shift, int64_t *src, int64_t src_lo, int64_t src_
 }
 
 // 28
-inline void copy_index_timestamp(index_t *index, int64_t index_lo, int64_t index_hi, int64_t *dest) {
+void copy_index_timestamp(index_t *index, int64_t index_lo, int64_t index_hi, int64_t *dest) {
     const int64_t count = index_hi - index_lo + 1;
     for (int64_t i = 0; i < count; i++) {
         dest[i] = index[index_lo + i].ts;
