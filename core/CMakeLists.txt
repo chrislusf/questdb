@@ -71,7 +71,6 @@ elseif (UNIX)
         )
     else (CMAKE_SYSTEM_NAME MATCHES "FreeBSD")
         MESSAGE("Building for GNU/Linux")
-
         include_directories($ENV{JAVA_HOME}/include/linux/)
         message(${CMAKE_SYSTEM_PROCESSOR})
         if (CMAKE_SYSTEM_PROCESSOR MATCHES "^aarch64")
@@ -121,10 +120,6 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${OUTPUT})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${OUTPUT})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${OUTPUT})
 
-#assembler subroutines by Agner Fog
-set(ASMLIB_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/main/c/share/asmlib/)
-include(${ASMLIB_SOURCE_DIR}CMakeLists.txt)
-
 #zlib
 set(ZLIB_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/main/c/share/zlib-1.2.8)
 
@@ -135,21 +130,21 @@ add_library(questdb SHARED ${SOURCE_FILES} ${ZLIB_SRCS})
 
 if (AARCH64)
 
-    ## on ARM64 we use vanilla arithmetic functions for now
+    add_compile_definitions(_ARM64)
 
+    ## on ARM64 we use vanilla arithmetic functions for now
     set(
             AARCH64_FILES
             src/main/c/share/rosti.cpp
             src/main/c/aarch64/vect.cpp
             src/main/c/share/vec_int_key_agg.cpp
             src/main/c/share/vec_agg_vanilla.cpp
-            src/main/c/share/vec_radix_sort.cpp
     )
 
     add_library(questdb-aarch64 OBJECT ${AARCH64_FILES})
     set_target_properties(
             questdb-aarch64 PROPERTIES
-	    COMPILE_FLAGS "-O3 -fPIC -std=c++17"
+	        COMPILE_FLAGS "-O3 -fPIC"
     )
 
     target_link_libraries(
@@ -159,10 +154,14 @@ if (AARCH64)
 
     set_target_properties(
             questdb PROPERTIES
-	    COMPILE_FLAGS "-O3"
+	        COMPILE_FLAGS "-O3"
     )
 
 else ()
+
+    #assembler subroutines by Agner Fog
+    set(ASMLIB_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src/main/c/share/asmlib/)
+    include(${ASMLIB_SOURCE_DIR}CMakeLists.txt)
 
     ## We need to compile VCL four different times with different CXX options
     ## for different instruction sets. As vect.cpp compiles it will produce
@@ -220,6 +219,8 @@ else ()
             questdb PROPERTIES
 	    COMPILE_FLAGS "-lrt -m64 -O3"
     )
+
+    include_directories(src/main/c/share/abseil-cpp)
 
     ## Uncomment to measure time of ooo.cpp methods
     ## add_compile_definitions(OOO_CPP_PROFILE_TIMING)

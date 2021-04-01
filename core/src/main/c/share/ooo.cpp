@@ -23,7 +23,6 @@
  ******************************************************************************/
 #include "jni.h"
 #include <cstring>
-#include <xmmintrin.h>
 #include "util.h"
 #include "simd.h"
 #include "asmlib/asmlib.h"
