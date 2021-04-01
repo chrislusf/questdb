@@ -4,6 +4,7 @@ project(questdb)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+set(CMAKE_BUILD_TYPE MinSizeRel)
 
 # deal with windows slashes in JAVA_HOME
 if ($ENV{JAVA_HOME})
@@ -139,6 +140,7 @@ if (AARCH64)
             src/main/c/aarch64/vect.cpp
             src/main/c/share/vec_int_key_agg.cpp
             src/main/c/share/vec_agg_vanilla.cpp
+            src/main/c/share/ooo_dispatch_vanilla.cpp
     )
 
     add_library(questdb-aarch64 OBJECT ${AARCH64_FILES})
