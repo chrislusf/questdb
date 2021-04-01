@@ -130,7 +130,7 @@ add_library(questdb SHARED ${SOURCE_FILES} ${ZLIB_SRCS})
 
 if (AARCH64)
 
-    add_compile_definitions(_ARM64)
+    add_compile_definitions(__aarch64__)
 
     ## on ARM64 we use vanilla arithmetic functions for now
     set(
